@@ -2,7 +2,7 @@
 
 A simple interactive demo showcasing isometric grid movement using SFML.
 
-![Isometric Grid Demo](IsometricTileDemoStage1.png)
+![Isometric Grid Demo](stage2.png)
 
 ## Features
 - Diamond-shaped isometric tile rendering
@@ -23,3 +23,14 @@ cd sfml-isometric-demo
 
 # Compile and run
 make && ./sfml-app
+
+
+## Evolution
+
+### Stage 1
+- single moving tile
+![Isometric Grid Demo](IsometricTileDemoStage1.png)
+
+### Stage 2
+- single moving tile
+![Isometric Grid Demo](IsometricTileDemoStage1.png)
