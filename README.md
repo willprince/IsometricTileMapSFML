@@ -23,7 +23,7 @@ cd sfml-isometric-demo
 
 # Compile and run
 make && ./sfml-app
-
+```
 
 ## Evolution
 
