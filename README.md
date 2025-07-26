@@ -33,4 +33,4 @@ make && ./sfml-app
 
 ### Stage 2
 - single moving tile
-![Isometric Grid Demo](IsometricTileDemoStage1.png)
+![Isometric Grid Demo](stage2.png)
