@@ -32,5 +32,9 @@ make && ./sfml-app
 ![Isometric Grid Demo](IsometricTileDemoStage1.png)
 
 ### Stage 2
-- single moving tile
+- add a binary color grid map
 ![Isometric Grid Demo](stage2.png)
+
+### Stage 3
+- add a zoomed view dead center
+![Isometric Grid Demo](stage3.png)

@@ -5,6 +5,8 @@
 int TILE_WIDTH = 64;
 int TILE_HEIGHT = 32;
 sf::Vector2f CENTER_TILE_COORDINATE = {31, 2};
+int SCREEN_WIDTH = 1980;
+int SCREEN_HEIGHT = 1080;
 
 struct VisibleGrid {
     int data[60][60];
@@ -38,8 +40,11 @@ int main()
     bool inputEnable = false;
 
     VisibleGrid grid = generateTileMap();
-    sf::ConvexShape whiteTileShape = generateTile(TILE_WIDTH, TILE_HEIGHT, sf::Color::White);
-    
+    sf::ConvexShape whiteTileShape = generateTile(TILE_WIDTH, TILE_HEIGHT, sf::Color::Magenta);
+
+    sf::View view;
+    view.reset(sf::FloatRect(SCREEN_WIDTH/2 - 600, SCREEN_HEIGHT/2 - 300, 1200, 600));
+    window.setView(view);
 
     while (window.isOpen())
     {
@@ -136,7 +141,7 @@ void drawTileMap(sf::RenderWindow& window, VisibleGrid& grid, int tileWidth, int
     for (int i = 0; i < 60; ++i) {
         for (int j = 0; j < 60; ++j) {
             if (grid.data[i][j] == 1) {
-                tile.setPosition(gridToScreen(i, j, tileWidth, tileHeight));
+                tile.setPosition(gridToScreen(i + 3, j - 28, tileWidth, tileHeight));
                 window.draw(tile);
             }
         }
