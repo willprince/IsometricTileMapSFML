@@ -9,6 +9,8 @@ sf::Vector2f CENTER_TILE_COORDINATE = {31, 2};
 int SCREEN_WIDTH = 1980;
 int SCREEN_HEIGHT = 1080;
 
+const bool DEBUG_MODE = true;
+
 struct VisibleGrid {
     int data[60][60];
 };
@@ -16,7 +18,9 @@ struct VisibleGrid {
 sf::Vector2f gridToScreen(float x, float y, int tileWidth, int tileHeight);
 sf::ConvexShape generateTile(int tileWidth, int tileHeight, sf::Color color);
 VisibleGrid generateTileMap();
-void drawTileMap(sf::RenderWindow& window, VisibleGrid& grid, int tileWidth, int tileHeight, sf::ConvexShape& tile);
+void drawTileMap(sf::RenderWindow& window, VisibleGrid& grid, int tileWidth, int tileHeight, sf::ConvexShape& tile, sf::Font& font, bool displayCoordinates = DEBUG_MODE);
+sf::Text generateTileCoordinateText(float x, float y, sf::Font& font);
+sf::Text setTileCoordinateTextPosition(sf::Text& text, float TileApexX, float TileApexY, int tileHeight);
 
 int main()
 {
@@ -38,7 +42,7 @@ int main()
     bool inputEnable = false;
 
     VisibleGrid grid = generateTileMap();
-    sf::ConvexShape whiteTileShape = generateTile(TILE_WIDTH, TILE_HEIGHT, sf::Color::Magenta);
+    sf::ConvexShape whiteTileShape = generateTile(TILE_WIDTH, TILE_HEIGHT, sf::Color::White);
 
     sf::View view;
     view.reset(sf::FloatRect(SCREEN_WIDTH/2 - 600, SCREEN_HEIGHT/2 - 300, 1200, 600));
@@ -74,19 +78,19 @@ int main()
 
         if(inputEnable){
 
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
                 y--;
                 inputEnable = false;
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
                 y++;
                 inputEnable = false;
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
                 x--;
                 inputEnable = false;
             }
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
                 x++;
                 inputEnable = false;
             }
@@ -103,7 +107,7 @@ int main()
         coordinateText.setString(ss.str());
 
         // DRAWING ZONE
-        drawTileMap(window, grid, TILE_WIDTH, TILE_HEIGHT, whiteTileShape);
+        drawTileMap(window, grid, TILE_WIDTH, TILE_HEIGHT, whiteTileShape, font);
         window.draw(coordinateText);
         window.draw(fpsText);
         window.draw(tileShape);
@@ -114,7 +118,6 @@ int main()
         std::stringstream fpsStream;
         fpsStream << "FPS: " << (int)fps;
         fpsText.setString(fpsStream.str());
-
 
         window.display();
     }
@@ -143,26 +146,70 @@ sf::ConvexShape generateTile(int tileWidth, int tileHeight, sf::Color color){
     return tileShape;
 }
 
+sf::Text generateTileCoordinateText(float x, float y, sf::Font& font) {
+    std::stringstream ss;
+    ss << "x" << x << "y" << y;
+    sf::Text text;
+    text.setFont(font);
+    text.setString(ss.str());
+    text.setCharacterSize(8);
+    text.setFillColor(sf::Color::Green);
+    return text;
+}
+
+sf::Text setTileCoordinateTextPosition(sf::Text& text, float TileApexX, float TileApexY, int tileHeight) {
+    TileApexX -= text.getGlobalBounds().getSize().x / 2; // Adjust for the tile's width
+    TileApexY += tileHeight / 2 - 5; // Adjust for the tile's height
+    text.setPosition(TileApexX, TileApexY);
+    return text;
+}
+
 VisibleGrid generateTileMap() {
     VisibleGrid grid;
     for (int i = 0; i < 60; ++i) {
-        for (int j = 0; j < 60; ++j) {
-            if(i%2 == 0 && j%2 == 0){
-                grid.data[i][j] = 1; // White tile
-            } else {
-                grid.data[i][j] = 0; // Black tile
+        if(i%2 == 0){
+            for (int j = 0; j < 60; ++j) {
+                if(j % 2 == 0) {
+                    grid.data[i][j] = 1; // Set tile to 1 for even rows and columns
+                } else {
+                    grid.data[i][j] = 0; // Set tile to 0 for odd columns
+                }
+            }
+        }else{
+            for (int j = 0; j < 60; ++j) {
+                if(j % 2 == 0) {
+                    grid.data[i][j] = 0; // Set tile to 0 for even columns
+                } else {
+                    grid.data[i][j] = 1; // Set tile to 1 for odd columns
+                }
             }
         }
+        
     }
     return grid;
 }
 
-void drawTileMap(sf::RenderWindow& window, VisibleGrid& grid, int tileWidth, int tileHeight, sf::ConvexShape& tile) {
+void drawTileMap(sf::RenderWindow& window, VisibleGrid& grid, int tileWidth, int tileHeight, sf::ConvexShape& tile, sf::Font& font, bool displayCoordinates) {
     for (int i = 0; i < 60; ++i) {
         for (int j = 0; j < 60; ++j) {
             if (grid.data[i][j] == 1) {
                 tile.setPosition(gridToScreen(i + 3, j - 28, tileWidth, tileHeight));
+                tile.setFillColor(sf::Color::White);
                 window.draw(tile);
+                if(displayCoordinates){
+                    sf::Text tileCoordinateText = generateTileCoordinateText(i + 3, j - 28, font);
+                    tileCoordinateText = setTileCoordinateTextPosition(tileCoordinateText, tile.getPosition().x, tile.getPosition().y, tileHeight);
+                    window.draw(tileCoordinateText);
+                }
+            }else{
+                tile.setPosition(gridToScreen(i + 3, j - 28, tileWidth, tileHeight));
+                tile.setFillColor(sf::Color::Black);
+                window.draw(tile);
+                if(displayCoordinates){
+                    sf::Text tileCoordinateText = generateTileCoordinateText(i + 3, j - 28, font);
+                    tileCoordinateText = setTileCoordinateTextPosition(tileCoordinateText, tile.getPosition().x, tile.getPosition().y, tileHeight);
+                    window.draw(tileCoordinateText);
+                }
             }
         }
     }

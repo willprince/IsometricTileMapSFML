@@ -24,7 +24,6 @@ cd sfml-isometric-demo
 # Compile and run
 make && ./sfml-app
 ```
-
 ## Evolution
 
 ### Stage 1
@@ -38,3 +37,11 @@ make && ./sfml-app
 ### Stage 3
 - add a zoomed view dead center
 ![Isometric Grid Demo](stage3.png)
+
+### Stage 4
+- add tile coordinate visualition when DEBUG_MODE=true
+![Isometric Grid Demo](stage3.png)
+
+## Todos
+- ScreenToMouse
+- Ajust HUD to view
